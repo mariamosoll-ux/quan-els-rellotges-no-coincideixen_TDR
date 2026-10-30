@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+<html lang="ca">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Simulador de dilatació temporal</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+
+    font-family: Arial, sans-serif;
+
+    background-color: #061a2d;
+
+    color: white;
+
+    margin: 0;
+
+    padding: 0;
+
+}
+
+
+.contenidor {
+
+    max-width: 1000px;
+
+    margin: 50px auto;
+
+    padding: 40px;
+
+    background-color: #082b4a;
+
+    border-radius: 15px;
+
+}
+
+
+h1 {
+
+    color: white;
+
+    text-align: center;
+
+    margin-top: 0;
+
+    margin-bottom: 35px;
+
+}
+
+
+h2 {
+
+    color: #6fa8dc;
+
+    margin-top: 40px;
+
+    margin-bottom: 25px;
+
+}
+
+
+.introduccio {
+
+    background-color: #0a3558;
+
+    padding: 25px;
+
+    border-radius: 12px;
+
+    margin-bottom: 35px;
+
+}
+
+
+p {
+
+    color: #cfe2f3;
+
+    font-size: 17px;
+
+    line-height: 1.7;
+
+    margin-top: 0;
+
+}
+
+
+.boto {
+
+    display: block;
+
+    width: fit-content;
+
+    margin: 25px auto 0;
+
+    padding: 14px 28px;
+
+    border-radius: 8px;
+
+    background-color: #0b5394;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-weight: bold;
+
+    transition: 0.2s;
+
+}
+
+
+.boto:hover {
+
+    background-color: #3d85c6;
+
+}
+
+
+/* CONTROLS */
+
+.controls {
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 25px;
+
+}
+
+
+.control {
+
+    background-color: #0a3558;
+
+    padding: 25px;
+
+    border-radius: 12px;
+
+}
+
+
+.control label {
+
+    display: block;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    color: #9fc5e8;
+
+    margin-bottom: 15px;
+
+}
+
+
+.valor-control {
+
+    text-align: center;
+
+    margin-bottom: 20px;
+
+    min-height: 35px;
+
+}
+
+
+.valor-control strong {
+
+    font-size: 23px;
+
+    color: white;
+
+}
+
+
+/* NOTACIÓ CIENTÍFICA */
+
+.scientific-control {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+}
+
+
+.scientific-control input {
+
+    width: 110px;
+
+    padding: 10px;
+
+    border: none;
+
+    border-radius: 6px;
+
+    background-color: #061a2d;
+
+    color: white;
+
+    font-size: 16px;
+
+    text-align: center;
+
+}
+
+
+.scientific-control span {
+
+    color: #cfe2f3;
+
+    font-size: 18px;
+
+}
+
+
+.scientific-control input:focus {
+
+    outline: 2px solid #0b5394;
+
+}
+
+
+/* APARTATS */
+
+.apartat {
+
+    margin-top: 45px;
+
+}
+
+
+/* RESULTATS */
+
+.resultats {
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 20px;
+
+}
+
+
+.resultat {
+
+    background-color: #0a3558;
+
+    border-radius: 12px;
+
+    padding: 24px;
+
+    text-align: center;
+
+    min-height: 190px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+}
+
+
+.resultat.important {
+
+    background-color: #0b4069;
+
+    border: 1px solid #1d5d8c;
+
+}
+
+
+.formula-petita {
+
+    font-size: 13px;
+
+    color: #9fc5e8;
+
+    margin-bottom: 15px;
+
+    min-height: 30px;
+
+}
+
+
+.titol-resultat {
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    color: #cfe2f3;
+
+    margin-bottom: 12px;
+
+}
+
+
+.resultat strong {
+
+    font-size: 25px;
+
+    color: white;
+
+    font-weight: bold;
+
+    word-break: break-word;
+
+}
+
+
+.resultat.important strong {
+
+    font-size: 31px;
+
+}
+
+
+.unitat {
+
+    font-size: 16px;
+
+    color: #cfe2f3;
+
+    font-weight: bold;
+
+    margin-top: 5px;
+
+}
+
+
+.descripcio-temps {
+
+    color: #9fc5e8;
+
+    font-size: 13px;
+
+    line-height: 1.4;
+
+    margin-top: 15px;
+
+    max-width: 300px;
+
+}
+
+
+/* GRÀFIQUES */
+
+.grafica {
+
+    width: 100%;
+
+    height: 400px;
+
+    margin-top: 30px;
+
+    padding: 20px;
+
+    background-color: #061f36;
+
+    border-radius: 12px;
+
+}
+
+
+.grafica canvas {
+
+    width: 100% !important;
+
+    height: 100% !important;
+
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 750px) {
+
+    .contenidor {
+
+        margin: 25px 15px;
+
+        padding: 25px;
+
+    }
+
+
+    .controls {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .resultats {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .scientific-control {
+
+        flex-wrap: wrap;
+
+    }
+
+
+    .grafica {
+
+        height: 330px;
+
+    }
+
+}
+
+
+/* ---------- Vista d'explicació (abans explicacio.html) ---------- */
+#vista-explicacio {
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(2, 10, 20, 0.75);
+    overflow-y: auto; padding: 30px 15px;
+}
+#vista-explicacio .contenidor {
+    position: relative; max-width: 850px; margin: 0 auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    border: 1px solid #1d5d8c;
+}
+.tanca-popup {
+    position: absolute; top: 14px; right: 16px;
+    width: 36px; height: 36px; border: none; border-radius: 50%;
+    background: #0b5394; color: white; font-size: 22px; line-height: 1;
+    cursor: pointer;
+}
+.tanca-popup:hover { background: #3d85c6; }
+body.popup-obert { overflow: hidden; }
+#vista-explicacio p { color:#cfe2f3; font-size:17px; line-height:1.7; }
+#vista-explicacio h2 { margin-top:35px; margin-bottom:0; }
+#vista-explicacio h3 { color:#9fc5e8; margin-top:25px; }
+#vista-explicacio .boto { margin-top:40px; }
+.idea { font-size:18px; font-weight:bold; text-align:center; background-color:#e8f1fa;
+        color:#0b5394; padding:15px; margin:25px 0; border-radius:10px; }
+[hidden] { display:none !important; }
+math { color:#9fc5e8; font-size:1.5em; }
+.formula-petita math { font-size:1.4em; }
+@media (max-width: 750px) { #vista-explicacio .contenidor { padding:25px; } }
+
+</style>
+
+</head>
+
+<body>
+
+<!-- ================= SIMULADOR ================= -->
+
+<div id="vista-simulador">
+
+<div class="contenidor">
+
+    <h1>Simulador de dilatació temporal</h1>
+
+    <div class="introduccio">
+
+        <p>
+            Simulador interactiu de dilatació temporal desenvolupat
+            com a part pràctica d’un treball de recerca de Batxillerat
+            sobre la relativitat del temps en les proximitats d’un
+            forat negre.
+        </p>
+
+        <a href="#explicacio" class="boto">
+            Entén la dilatació temporal
+        </a>
+
+    </div>
+
+
+    <h2>Paràmetres del sistema</h2>
+
+
+    <div class="controls">
+
+
+        <!-- MASSA -->
+
+        <div class="control">
+
+            <label>
+                MASSA DEL FORAT NEGRE
+            </label>
+
+            <div class="valor-control">
+
+                <strong id="massaValor">
+                    3,4 × 10<sup>38</sup> kg
+                </strong>
+
+            </div>
+
+            <div class="scientific-control">
+
+                <input
+                    type="number"
+                    id="massaMantissa"
+                    min="1"
+                    max="9.999"
+                    step="0.1"
+                    value="3.4"
+                >
+
+                <span>× 10</span>
+
+                <input
+                    type="number"
+                    id="massaExponent"
+                    min="0"
+                    max="300"
+                    step="1"
+                    value="38"
+                >
+
+            </div>
+
+        </div>
+
+
+        <!-- PERÍODE -->
+
+        <div class="control">
+
+            <label>
+                PERÍODE ORBITAL
+            </label>
+
+            <div class="valor-control">
+
+                <strong id="periodeValor">
+                    1,0 × 10<sup>6</sup> s
+                </strong>
+
+            </div>
+
+            <div class="scientific-control">
+
+                <input
+                    type="number"
+                    id="periodeMantissa"
+                    min="1"
+                    max="9.999"
+                    step="0.1"
+                    value="1"
+                >
+
+                <span>× 10</span>
+
+                <input
+                    type="number"
+                    id="periodeExponent"
+                    min="0"
+                    max="300"
+                    step="1"
+                    value="6"
+                >
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- DILATACIÓ CINEMÀTICA -->
+
+    <section class="apartat">
+
+        <h2>Dilatació temporal cinemàtica</h2>
+
+        <div class="resultats">
+
+
+            <div class="resultat">
+
+                <div class="formula-petita">
+
+                    <math display="block"><mrow><mi>R</mi><mo>=</mo><mroot><mfrac><mrow><mi>G</mi><mi>M</mi><msup><mi>T</mi><mn>2</mn></msup></mrow><mrow><mn>4</mn><msup><mi>π</mi><mn>2</mn></msup></mrow></mfrac><mn>3</mn></mroot></mrow></math>
+
+                </div>
+
+                <span class="titol-resultat">
+                    RADI ORBITAL
+                </span>
+
+                <strong id="radi">
+                    —
+                </strong>
+
+                <div class="unitat">
+                    m
+                </div>
+
+            </div>
+
+
+            <div class="resultat">
+
+                <div class="formula-petita">
+
+                    <math display="block"><mrow><mi>v</mi><mo>=</mo><msqrt><mfrac><mrow><mi>G</mi><mi>M</mi></mrow><mi>R</mi></mfrac></msqrt></mrow></math>
+
+                </div>
+
+                <span class="titol-resultat">
+                    VELOCITAT ORBITAL
+                </span>
+
+                <strong id="velocitat">
+                    —
+                </strong>
+
+                <div class="unitat">
+                    m/s
+                </div>
+
+            </div>
+
+
+            <div class="resultat important">
+
+                <div class="formula-petita">
+                    <math display="block"><msub><mi>t</mi><mn>0</mn></msub></math>
+                </div>
+
+                <span class="titol-resultat">
+                    TEMPS PROPI
+                </span>
+
+                <strong>
+                    1,000 × 10<sup>0</sup>
+                </strong>
+
+                <div class="unitat">
+                    h
+                </div>
+
+                <div class="descripcio-temps">
+                    Temps mesurat per l'observador situat
+                    en el camp gravitatori.
+                </div>
+
+            </div>
+
+
+            <div class="resultat important">
+
+                <div class="formula-petita">
+
+                    <math display="block"><mrow><mi>t</mi><mo>=</mo><mfrac><msub><mi>t</mi><mn>0</mn></msub><msqrt><mrow><mn>1</mn><mo>−</mo><mfrac><msup><mi>v</mi><mn>2</mn></msup><msup><mi>c</mi><mn>2</mn></msup></mfrac></mrow></msqrt></mfrac></mrow></math>
+
+                </div>
+
+                <span class="titol-resultat">
+                    TEMPS IMPROPI
+                </span>
+
+                <strong id="tempsCinematic">
+                    —
+                </strong>
+
+                <div class="unitat">
+                    h
+                </div>
+
+                <div class="descripcio-temps">
+                    Temps mesurat per un observador llunyà
+                    al camp gravitatori.
+                </div>
+
+            </div>
+
+
+            <div class="resultat important">
+
+                <div class="formula-petita">
+
+                    <math display="block"><mfrac><mi>t</mi><msub><mi>t</mi><mn>0</mn></msub></mfrac></math>
+
+                </div>
+
+                <span class="titol-resultat">
+                    FACTOR DE DILATACIÓ TEMPORAL
+                </span>
+
+                <strong id="factorCinematic">
+                    —
+                </strong>
+
+                <div class="descripcio-temps">
+                    Relació entre el temps impropi
+                    i el temps propi.
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="grafica">
+
+            <canvas id="graficaCinematic"></canvas>
+
+        </div>
+
+    </section>
+
+
+    <!-- DILATACIÓ GRAVITACIONAL -->
+
+    <section class="apartat">
+
+        <h2>Dilatació temporal gravitacional</h2>
+
+        <div class="resultats">
+
+
+            <div class="resultat">
+
+                <div class="formula-petita">
+
+                    <math display="block"><mrow><mi>R</mi><mo>=</mo><mroot><mfrac><mrow><mi>G</mi><mi>M</mi><msup><mi>T</mi><mn>2</mn></msup></mrow><mrow><mn>4</mn><msup><mi>π</mi><mn>2</mn></msup></mrow></mfrac><mn>3</mn></mroot></mrow></math>
+
+                </div>
+
+                <span class="titol-resultat">
+                    RADI ORBITAL
+                </span>
+
+                <strong id="radiGravitacional">
+                    —
+                </strong>
+
+                <div class="unitat">
+                    m
+                </div>
+
+            </div>
+
+
+            <div class="resultat important">
+
+                <div class="formula-petita">
+                    <math display="block"><msub><mi>t</mi><mn>0</mn></msub></math>
+                </div>
+
+                <span class="titol-resultat">
+                    TEMPS PROPI
+                </span>
+
+                <strong>
+                    1,000 × 10<sup>0</sup>
+                </strong>
+
+                <div class="unitat">
+                    h
+                </div>
+
+                <div class="descripcio-temps">
+                    Temps mesurat per l'observador situat
+                    en el camp gravitatori.
+                </div>
+
+            </div>
+
+
+            <div class="resultat important">
+
+                <div class="formula-petita">
+
+                    <math display="block"><mrow><mi>t</mi><mo>=</mo><mfrac><msub><mi>t</mi><mn>0</mn></msub><msqrt><mrow><mn>1</mn><mo>−</mo><mfrac><mrow><mn>2</mn><mi>G</mi><mi>M</mi></mrow><mrow><mi>R</mi><msup><mi>c</mi><mn>2</mn></msup></mrow></mfrac></mrow></msqrt></mfrac></mrow></math>
+
+                </div>
+
+                <span class="titol-resultat">
+                    TEMPS IMPROPI
+                </span>
+
+                <strong id="tempsGravitacional">
+                    —
+                </strong>
+
+                <div class="unitat">
+                    h
+                </div>
+
+                <div class="descripcio-temps">
+                    Temps mesurat per un observador llunyà
+                    al camp gravitatori.
+                </div>
+
+            </div>
+
+
+            <div class="resultat important">
+
+                <div class="formula-petita">
+
+                    <math display="block"><mfrac><mi>t</mi><msub><mi>t</mi><mn>0</mn></msub></mfrac></math>
+
+                </div>
+
+                <span class="titol-resultat">
+                    FACTOR DE DILATACIÓ TEMPORAL
+                </span>
+
+                <strong id="factorGravitacional">
+                    —
+                </strong>
+
+                <div class="descripcio-temps">
+                    Relació entre el temps impropi
+                    i el temps propi.
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="grafica">
+
+            <canvas id="graficaGravitacional"></canvas>
+
+        </div>
+
+    </section>
+
+
+
+</div>
+
+</div>
+
+
+<!-- ================= EXPLICACIÓ ================= -->
+
+<div id="vista-explicacio" hidden role="dialog" aria-modal="true" aria-label="Entén la dilatació temporal">
+
+<div class="contenidor">
+
+<button type="button" class="tanca-popup" id="tancaPopup" aria-label="Tanca">×</button>
+
+
+
+    <h1>Entén la dilatació temporal</h1>
+
+
+    <p>
+
+        La dilatació temporal és el fenomen pel qual el temps no
+        transcorre de la mateixa manera per a tots els observadors.
+        És una conseqüència de les teories de la relativitat d’Einstein.
+
+    </p>
+
+
+    <h2>Les teories de la relativitat</h2>
+
+
+    <h3>Relativitat Especial</h3>
+
+
+    <p>
+
+        La <strong>Teoria de la Relativitat Especial</strong> estableix
+        que l’espai i el temps depenen del moviment de cada observador.
+        Com més ràpid es mou un objecte, més lentament passa el temps
+        per a ell respecte d’un observador que es mou més lentament.
+
+    </p>
+
+
+    <div class="idea">
+
+        + velocitat → + lent passa el temps
+
+    </div>
+
+
+    <h3>Relativitat General</h3>
+
+
+    <p>
+
+        La <strong>Relativitat General</strong> explica la gravetat
+        com una curvatura de l’espaitemps, format per les tres
+        dimensions de l’espai i el temps. Com més massa té un objecte,
+        més deforma l’espaitemps. Aquesta curvatura afecta el pas del
+        temps: com més intensa és la curvatura, més lentament passa
+        el temps.
+
+    </p>
+
+
+    <div class="idea">
+
+        + massa → + curvatura → + lent passa el temps
+
+    </div>
+
+
+    <a href="#" id="tornaSimulador" class="boto">
+
+        Tanca
+
+    </a>
+
+
+</div>
+
+</div>
+
+
+<script>
+const G = 6.67430e-11;
+
+const c = 299792458;
+
+
+/* CONTROLS */
+
+const massaMantissa =
+    document.getElementById("massaMantissa");
+
+const massaExponent =
+    document.getElementById("massaExponent");
+
+const periodeMantissa =
+    document.getElementById("periodeMantissa");
+
+const periodeExponent =
+    document.getElementById("periodeExponent");
+
+
+const massaValor =
+    document.getElementById("massaValor");
+
+const periodeValor =
+    document.getElementById("periodeValor");
+
+
+/* RESULTATS */
+
+const radi =
+    document.getElementById("radi");
+
+const velocitat =
+    document.getElementById("velocitat");
+
+const tempsCinematic =
+    document.getElementById("tempsCinematic");
+
+const factorCinematic =
+    document.getElementById("factorCinematic");
+
+
+const radiGravitacional =
+    document.getElementById("radiGravitacional");
+
+const tempsGravitacional =
+    document.getElementById("tempsGravitacional");
+
+const factorGravitacional =
+    document.getElementById("factorGravitacional");
+
+
+let chartCinematic = null;
+
+let chartGravitacional = null;
+
+
+
+/* =====================================================
+   FORMAT CIENTÍFIC
+===================================================== */
+
+function formatScientific(valor, decimals = 3) {
+
+    if (!Number.isFinite(valor)) {
+        return "No definit";
+    }
+
+    if (valor === 0) {
+        return "0";
+    }
+
+    const exponent =
+        Math.floor(
+            Math.log10(Math.abs(valor))
+        );
+
+    const mantissa =
+        valor /
+        Math.pow(10, exponent);
+
+    return (
+        mantissa
+            .toFixed(decimals)
+            .replace(".", ",")
+        +
+        " × 10"
+        +
+        "<sup>"
+        +
+        exponent
+        +
+        "</sup>"
+    );
+}
+
+
+/* =====================================================
+   FORMAT NORMAL PER A LES GRÀFIQUES
+===================================================== */
+
+function formatNormal(valor) {
+
+    if (!Number.isFinite(valor)) {
+        return "";
+    }
+
+    if (valor === 0) {
+        return "0";
+    }
+
+    return new Intl.NumberFormat(
+        "ca-ES",
+        {
+            useGrouping: true,
+            maximumFractionDigits: 6
+        }
+    ).format(valor);
+}
+
+
+/* =====================================================
+   OBTENIR MASSA
+===================================================== */
+
+function obtenirMassa() {
+
+    const mantissa =
+        Number(massaMantissa.value);
+
+    const exponent =
+        Number(massaExponent.value);
+
+
+    if (
+        !Number.isFinite(mantissa) ||
+        !Number.isFinite(exponent) ||
+        mantissa <= 0
+    ) {
+        return NaN;
+    }
+
+
+    return (
+        mantissa *
+        Math.pow(10, exponent)
+    );
+}
+
+
+/* =====================================================
+   OBTENIR PERÍODE
+===================================================== */
+
+function obtenirPeriode() {
+
+    const mantissa =
+        Number(periodeMantissa.value);
+
+    const exponent =
+        Number(periodeExponent.value);
+
+
+    if (
+        !Number.isFinite(mantissa) ||
+        !Number.isFinite(exponent) ||
+        mantissa <= 0
+    ) {
+        return NaN;
+    }
+
+
+    return (
+        mantissa *
+        Math.pow(10, exponent)
+    );
+}
+
+
+/* =====================================================
+   ACTUALITZAR VALORS DELS CONTROLS
+===================================================== */
+
+function actualitzarControls() {
+
+    const M =
+        obtenirMassa();
+
+    const T =
+        obtenirPeriode();
+
+
+    massaValor.innerHTML =
+        formatScientific(M) + " kg";
+
+
+    periodeValor.innerHTML =
+        formatScientific(T) + " s";
+}
+
+
+/* =====================================================
+   CÀLCUL DEL SIMULADOR
+===================================================== */
+
+function calcular() {
+
+    actualitzarControls();
+
+
+    const M =
+        obtenirMassa();
+
+    const T =
+        obtenirPeriode();
+
+
+    if (
+        !Number.isFinite(M) ||
+        !Number.isFinite(T) ||
+        M <= 0 ||
+        T <= 0
+    ) {
+        return;
+    }
+
+
+    /* =================================================
+       1. RADI ORBITAL
+
+       R = ∛(G M T² / 4π²)
+    ================================================= */
+
+    const radiOrbital =
+        Math.cbrt(
+            (
+                G *
+                M *
+                Math.pow(T, 2)
+            )
+            /
+            (
+                4 *
+                Math.pow(Math.PI, 2)
+            )
+        );
+
+
+    /* =================================================
+       2. VELOCITAT ORBITAL
+
+       v = √(GM/R)
+    ================================================= */
+
+    const velocitatOrbital =
+        Math.sqrt(
+            (
+                G *
+                M
+            )
+            /
+            radiOrbital
+        );
+
+
+    /* =================================================
+       3. DILATACIÓ TEMPORAL CINEMÀTICA
+
+       t = t0 / √(1 - v²/c²)
+
+       t0 = 1 h
+    ================================================= */
+
+    const tempsPropi = 1;
+
+
+    const termeCinematic =
+        1 -
+        (
+            Math.pow(
+                velocitatOrbital,
+                2
+            )
+            /
+            Math.pow(c, 2)
+        );
+
+
+    let tempsImpropiCinematic;
+
+
+    if (termeCinematic > 0) {
+
+        tempsImpropiCinematic =
+            tempsPropi /
+            Math.sqrt(
+                termeCinematic
+            );
+
+    } else {
+
+        tempsImpropiCinematic =
+            Infinity;
+
+    }
+
+
+    /* =================================================
+       4. DILATACIÓ TEMPORAL GRAVITACIONAL
+
+       tf = t0 / √(1 - 2GM/Rc²)
+
+       t0 = 1 h
+    ================================================= */
+
+    const termeGravitacional =
+        1 -
+        (
+            2 *
+            G *
+            M
+        )
+        /
+        (
+            radiOrbital *
+            Math.pow(c, 2)
+        );
+
+
+    let tempsImpropiGravitacional;
+
+
+    if (termeGravitacional > 0) {
+
+        tempsImpropiGravitacional =
+            tempsPropi /
+            Math.sqrt(
+                termeGravitacional
+            );
+
+    } else {
+
+        tempsImpropiGravitacional =
+            Infinity;
+
+    }
+
+
+    /* =================================================
+       FACTORS DE DILATACIÓ
+    ================================================= */
+
+    const factorCinematicValor =
+        tempsImpropiCinematic /
+        tempsPropi;
+
+
+    const factorGravitacionalValor =
+        tempsImpropiGravitacional /
+        tempsPropi;
+
+
+    /* =================================================
+       MOSTRAR RESULTATS
+    ================================================= */
+
+    radi.innerHTML =
+        formatScientific(
+            radiOrbital
+        );
+
+
+    velocitat.innerHTML =
+        formatScientific(
+            velocitatOrbital
+        );
+
+
+    tempsCinematic.innerHTML =
+        formatScientific(
+            tempsImpropiCinematic
+        );
+
+
+    factorCinematic.innerHTML =
+        formatScientific(
+            factorCinematicValor
+        );
+
+
+    radiGravitacional.innerHTML =
+        formatScientific(
+            radiOrbital
+        );
+
+
+    tempsGravitacional.innerHTML =
+        formatScientific(
+            tempsImpropiGravitacional
+        );
+
+
+    factorGravitacional.innerHTML =
+        formatScientific(
+            factorGravitacionalValor
+        );
+
+
+    /* =================================================
+       ACTUALITZAR GRÀFIQUES
+    ================================================= */
+
+    chartCinematic =
+        actualitzarGrafica(
+            "graficaCinematic",
+            factorCinematicValor,
+            "Temps propi i temps impropi — efecte cinemàtic",
+            chartCinematic
+        );
+
+
+    chartGravitacional =
+        actualitzarGrafica(
+            "graficaGravitacional",
+            factorGravitacionalValor,
+            "Temps propi i temps impropi — efecte gravitacional",
+            chartGravitacional
+        );
+
+}
+
+
+/* =====================================================
+   GENERAR DADES DE LA GRÀFICA
+===================================================== */
+
+function generarDades(factor) {
+
+    if (
+        !Number.isFinite(factor) ||
+        factor <= 0
+    ) {
+        return [];
+    }
+
+
+    const dades = [];
+
+
+    for (
+        let i = 0;
+        i <= 100;
+        i++
+    ) {
+
+        const tempsPropi =
+            i / 10;
+
+
+        const tempsImpropi =
+            tempsPropi *
+            factor;
+
+
+        dades.push({
+
+            x: tempsPropi,
+
+            y: tempsImpropi
+
+        });
+
+    }
+
+
+    return dades;
+}
+
+
+/* =====================================================
+   ACTUALITZAR GRÀFICA
+   (gràfica pròpia dibuixada amb canvas, sense llibreries)
+===================================================== */
+
+function nombreBonic(maxim, nIntervals) {
+
+    const brut = maxim / nIntervals;
+
+    const exp = Math.pow(10, Math.floor(Math.log10(brut)));
+
+    const f = brut / exp;
+
+    let pas;
+
+    if (f <= 1) pas = 1;
+    else if (f <= 2) pas = 2;
+    else if (f <= 5) pas = 5;
+    else pas = 10;
+
+    return pas * exp;
+}
+
+
+function actualitzarGrafica(
+    id,
+    factor,
+    titol,
+    graficaAnterior
+) {
+
+    if (graficaAnterior !== null) {
+
+        graficaAnterior.destroy();
+
+    }
+
+
+    const canvas =
+        document.getElementById(id);
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+    if (
+        !Number.isFinite(factor) ||
+        factor <= 0
+    ) {
+
+        ctx.clearRect(
+            0, 0,
+            canvas.width,
+            canvas.height
+        );
+
+        return null;
+
+    }
+
+
+    const dades =
+        generarDades(factor);
+
+    let hover = null;
+
+
+    function dibuixar() {
+
+        const dpr =
+            window.devicePixelRatio || 1;
+
+        const w =
+            canvas.clientWidth;
+
+        const h =
+            canvas.clientHeight;
+
+        if (w === 0 || h === 0) {
+            return;
+        }
+
+        canvas.width = w * dpr;
+
+        canvas.height = h * dpr;
+
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        ctx.clearRect(0, 0, w, h);
+
+
+        const marge = {
+            esq: 80,
+            dre: 20,
+            sup: 50,
+            inf: 55
+        };
+
+        const pw = w - marge.esq - marge.dre;
+
+        const ph = h - marge.sup - marge.inf;
+
+        const xMax = 10;
+
+        const yMaxDades =
+            dades[dades.length - 1].y;
+
+        const pasY =
+            nombreBonic(yMaxDades, 5);
+
+        const yMax =
+            Math.ceil(yMaxDades / pasY) * pasY;
+
+        const px = x =>
+            marge.esq + (x / xMax) * pw;
+
+        const py = y =>
+            marge.sup + ph - (y / yMax) * ph;
+
+
+        ctx.font = "13px Arial";
+
+        ctx.textBaseline = "middle";
+
+
+        /* Títol */
+
+        ctx.fillStyle = "#cfe2f3";
+
+        ctx.textAlign = "center";
+
+        ctx.font = "bold 15px Arial";
+
+        ctx.fillText(titol, marge.esq + pw / 2, 16);
+
+
+        /* Llegenda */
+
+        ctx.font = "13px Arial";
+
+        ctx.fillStyle = "#36a2eb";
+
+        ctx.fillRect(marge.esq + pw / 2 - 55, 33, 30, 10);
+
+        ctx.fillStyle = "#cfe2f3";
+
+        ctx.textAlign = "left";
+
+        ctx.fillText("Temps impropi", marge.esq + pw / 2 - 20, 38);
+
+
+        /* Graella i etiquetes */
+
+        ctx.strokeStyle = "rgba(207,226,243,0.15)";
+
+        ctx.lineWidth = 1;
+
+        ctx.fillStyle = "#cfe2f3";
+
+        for (let x = 0; x <= xMax; x += 1) {
+
+            ctx.beginPath();
+
+            ctx.moveTo(px(x), marge.sup);
+
+            ctx.lineTo(px(x), marge.sup + ph);
+
+            ctx.stroke();
+
+            ctx.textAlign = "center";
+
+            ctx.fillText(
+                formatNormal(x),
+                px(x),
+                marge.sup + ph + 14
+            );
+
+        }
+
+        for (let y = 0; y <= yMax + pasY / 2; y += pasY) {
+
+            ctx.beginPath();
+
+            ctx.moveTo(marge.esq, py(y));
+
+            ctx.lineTo(marge.esq + pw, py(y));
+
+            ctx.stroke();
+
+            ctx.textAlign = "right";
+
+            ctx.fillText(
+                formatNormal(y),
+                marge.esq - 8,
+                py(y)
+            );
+
+        }
+
+
+        /* Títols dels eixos */
+
+        ctx.textAlign = "center";
+
+        ctx.fillText(
+            "Temps propi (h)",
+            marge.esq + pw / 2,
+            h - 12
+        );
+
+        ctx.save();
+
+        ctx.translate(16, marge.sup + ph / 2);
+
+        ctx.rotate(-Math.PI / 2);
+
+        ctx.fillText("Temps impropi (h)", 0, 0);
+
+        ctx.restore();
+
+
+        /* Línia */
+
+        ctx.strokeStyle = "#36a2eb";
+
+        ctx.lineWidth = 3;
+
+        ctx.beginPath();
+
+        dades.forEach((d, i) => {
+
+            if (i === 0) ctx.moveTo(px(d.x), py(d.y));
+
+            else ctx.lineTo(px(d.x), py(d.y));
+
+        });
+
+        ctx.stroke();
+
+
+        /* Punts */
+
+        ctx.fillStyle = "#36a2eb";
+
+        dades.forEach(d => {
+
+            ctx.beginPath();
+
+            ctx.arc(px(d.x), py(d.y), 3, 0, Math.PI * 2);
+
+            ctx.fill();
+
+        });
+
+
+        /* Punt i quadre d'informació en passar-hi el ratolí */
+
+        if (hover !== null) {
+
+            const d = dades[hover];
+
+            ctx.beginPath();
+
+            ctx.arc(px(d.x), py(d.y), 8, 0, Math.PI * 2);
+
+            ctx.fillStyle = "rgba(54,162,235,0.5)";
+
+            ctx.fill();
+
+
+            const linies = [
+                "Equivalència temporal",
+                "Temps propi: " + formatNormal(d.x) + " h",
+                "Temps impropi: " + formatNormal(d.y) + " h"
+            ];
+
+            ctx.font = "13px Arial";
+
+            const amplada =
+                Math.max(
+                    ...linies.map(l => ctx.measureText(l).width)
+                ) + 20;
+
+            const alcada = linies.length * 20 + 10;
+
+            let bx = px(d.x) + 14;
+
+            let by = py(d.y) - alcada - 10;
+
+            if (bx + amplada > w) bx = px(d.x) - amplada - 14;
+
+            if (by < 0) by = py(d.y) + 14;
+
+            ctx.fillStyle = "rgba(0,0,0,0.8)";
+
+            ctx.fillRect(bx, by, amplada, alcada);
+
+            ctx.fillStyle = "#ffffff";
+
+            ctx.textAlign = "left";
+
+            linies.forEach((l, i) => {
+
+                ctx.font = i === 0 ? "bold 13px Arial" : "13px Arial";
+
+                ctx.fillText(l, bx + 10, by + 15 + i * 20);
+
+            });
+
+        }
+
+        canvas._geom = { px, py };
+
+    }
+
+
+    function alMoure(event) {
+
+        const rect = canvas.getBoundingClientRect();
+
+        const x = event.clientX - rect.left;
+
+        const geom = canvas._geom;
+
+        if (!geom) return;
+
+        let millor = null;
+
+        let distMin = Infinity;
+
+        dades.forEach((d, i) => {
+
+            const dist = Math.abs(geom.px(d.x) - x);
+
+            if (dist < distMin) {
+                distMin = dist;
+                millor = i;
+            }
+
+        });
+
+        if (millor !== hover) {
+            hover = millor;
+            dibuixar();
+        }
+
+    }
+
+
+    function alSortir() {
+
+        hover = null;
+
+        dibuixar();
+
+    }
+
+
+    canvas.addEventListener("mousemove", alMoure);
+
+    canvas.addEventListener("mouseleave", alSortir);
+
+    window.addEventListener("resize", dibuixar);
+
+    dibuixar();
+
+    return {
+
+        destroy: function() {
+
+            canvas.removeEventListener("mousemove", alMoure);
+
+            canvas.removeEventListener("mouseleave", alSortir);
+
+            window.removeEventListener("resize", dibuixar);
+
+        }
+
+    };
+
+}
+
+
+
+
+/* =====================================================
+   ACTUALITZACIÓ DELS RESULTATS
+===================================================== */
+
+massaMantissa.addEventListener(
+    "input",
+    calcular
+);
+
+
+massaExponent.addEventListener(
+    "input",
+    calcular
+);
+
+
+periodeMantissa.addEventListener(
+    "input",
+    calcular
+);
+
+
+periodeExponent.addEventListener(
+    "input",
+    calcular
+);
+
+
+/* =====================================================
+   INICIAR EL SIMULADOR
+===================================================== */
+
+calcular();
+
+
+
+/* =====================================================
+   POPUP D'EXPLICACIÓ
+===================================================== */
+
+const popup =
+    document.getElementById("vista-explicacio");
+
+function obrirPopup() {
+
+    popup.hidden = false;
+
+    popup.scrollTop = 0;
+
+    document.body.classList.add("popup-obert");
+
+}
+
+function tancarPopup() {
+
+    popup.hidden = true;
+
+    document.body.classList.remove("popup-obert");
+
+}
+
+document
+.querySelector('#vista-simulador a[href="#explicacio"]')
+.addEventListener("click", function(e) {
+
+    e.preventDefault();
+
+    obrirPopup();
+
+});
+
+document.getElementById("tancaPopup")
+    .addEventListener("click", tancarPopup);
+
+document.getElementById("tornaSimulador")
+    .addEventListener("click", function(e) {
+
+        e.preventDefault();
+
+        tancarPopup();
+
+    });
+
+popup.addEventListener("click", function(e) {
+
+    if (e.target === popup) {
+        tancarPopup();
+    }
+
+});
+
+document.addEventListener("keydown", function(e) {
+
+    if (e.key === "Escape") {
+        tancarPopup();
+    }
+
+});
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,2142 @@
+<!DOCTYPE html>
+<html lang="ca">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Curvatura de l'espaitemps</title>
+
+<style>
+
+/* =====================================================
+   CONFIGURACIÓ GENERAL
+   ===================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+
+    margin: 0;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            #101522 0%,
+            #05070d 60%,
+            #020308 100%
+        );
+
+    color: white;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+}
+
+
+/* =====================================================
+   TÍTOL
+   ===================================================== */
+
+header {
+
+    text-align: center;
+
+    padding:
+        25px
+        15px
+        15px;
+
+}
+
+header h1 {
+
+    margin: 0;
+
+    font-size: 30px;
+
+    font-weight: 600;
+
+}
+
+
+/* =====================================================
+   CONTENIDOR
+   ===================================================== */
+
+.contenidor {
+
+    width: 95%;
+
+    max-width: 1400px;
+
+    margin: auto;
+
+}
+
+
+/* =====================================================
+   SIMULACIÓ
+   ===================================================== */
+
+.simulacio {
+
+    position: relative;
+
+    width: 100%;
+
+    height: 650px;
+
+    overflow: hidden;
+
+    border-radius: 14px;
+
+    border:
+        1px solid
+        rgba(100,130,170,0.35);
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            #08101b,
+            #02040a
+        );
+
+}
+
+canvas {
+
+    display: block;
+
+    width: 100%;
+
+    height: 100%;
+
+    cursor: crosshair;
+
+}
+
+
+/* =====================================================
+   CONTROLS
+   ===================================================== */
+
+.controls {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    align-items: end;
+
+    gap: 14px;
+
+    margin-top: 15px;
+
+    padding: 16px;
+
+    background:
+        rgba(10,15,26,0.95);
+
+    border:
+        1px solid
+        rgba(100,130,170,0.30);
+
+    border-radius: 12px;
+
+}
+
+.control {
+
+    min-width: 190px;
+
+}
+
+.control label {
+
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #b8c1d2;
+
+    font-size: 13px;
+
+}
+
+.control-massa {
+
+    flex: 0 0 50%;
+
+    width: 50%;
+
+    min-width: 0;
+
+    box-sizing: border-box;
+
+}
+
+.control-massa .slider-fila {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+}
+
+.control-massa input[type="range"] {
+
+    flex: 1;
+
+    width: 100%;
+
+}
+
+.control-massa #massaValor {
+
+    min-width: 60px;
+
+    color: white;
+
+    font-size: 14px;
+
+    text-align: right;
+
+}
+
+select {
+
+    width: 100%;
+
+    padding: 9px;
+
+    border:
+        1px solid
+        #3a465d;
+
+    border-radius: 7px;
+
+    background: #070a11;
+
+    color: white;
+
+    font-size: 14px;
+
+}
+
+.grup-botons {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+}
+
+.control-reiniciar {
+
+    flex: 1 1 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    align-self: stretch;
+
+}
+
+.pista-llancar {
+
+    margin: 10px 0 0 0;
+
+    color: #8fa0bd;
+
+    font-size: 16px;
+
+    font-style: italic;
+
+    line-height: 1.4;
+
+}
+
+.control-objecte {
+
+    flex: 1 1 100%;
+
+}
+
+#reiniciar {
+
+    padding: 16px 32px;
+
+    font-size: 18px;
+
+    align-self: stretch;
+
+}
+
+button.opcio {
+
+    background: #2b3853;
+
+    border: 1px solid #3a465d;
+
+}
+
+button.opcio:hover {
+
+    background: #3b4b6d;
+
+}
+
+button.opcio.seleccionat {
+
+    background: #1f9d55;
+
+    border-color: #2fd078;
+
+}
+
+button.opcio.seleccionat:hover {
+
+    background: #25b564;
+
+}
+
+button {
+
+    padding:
+        10px
+        16px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: #2b3853;
+
+    color: white;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+button:hover {
+
+    background: #3b4b6d;
+
+}
+
+button.afegir {
+
+    background: #5369df;
+
+}
+
+button.afegir:hover {
+
+    background: #687de9;
+
+}
+
+button.eliminar {
+
+    background: #542f3a;
+
+}
+
+button.eliminar:hover {
+
+    background: #70404d;
+
+}
+
+
+/* =====================================================
+   TEXT DEL TDR
+   ===================================================== */
+
+.text {
+
+    margin:
+        20px
+        0
+        35px;
+
+    padding: 25px;
+
+    background:
+        rgba(10,15,26,0.95);
+
+    border:
+        1px solid
+        rgba(100,130,170,0.30);
+
+    border-radius: 12px;
+
+    line-height: 1.7;
+
+}
+
+.text h2 {
+
+    margin-top: 0;
+
+    font-size: 23px;
+
+}
+
+.text p {
+
+    margin:
+        12px
+        0;
+
+}
+
+.text strong {
+
+    font-weight: bold;
+
+}
+
+
+/* =====================================================
+   MÒBIL
+   ===================================================== */
+
+@media (max-width: 800px) {
+
+    .simulacio {
+
+        height: 520px;
+
+    }
+
+    header h1 {
+
+        font-size: 23px;
+
+    }
+
+    .control {
+
+        width: 100%;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<h1>
+Simulador de la curvatura de l'espaitemps
+</h1>
+
+</header>
+
+
+<div class="contenidor">
+
+
+<!-- ===================================================
+     SIMULACIÓ
+     =================================================== -->
+
+<div class="simulacio">
+
+<canvas id="canvas"></canvas>
+
+</div>
+
+
+<!-- ===================================================
+     CONTROLS
+     =================================================== -->
+
+<div class="controls">
+
+
+
+
+
+<div class="control control-massa">
+
+<label>
+Massa central
+</label>
+
+<div class="slider-fila">
+
+<input
+    type="range"
+    id="massa"
+    min="0"
+    max="500"
+    step="1"
+    value="0"
+>
+
+<span id="massaValor">0 kg</span>
+
+</div>
+
+<p class="pista-llancar">
+Arrossega el control per augmentar la massa i deformar la xarxa.
+</p>
+
+
+
+</div>
+
+
+<div class="control-reiniciar">
+
+<button id="reiniciar">
+Reiniciar
+</button>
+
+</div>
+
+
+<div class="control control-objecte">
+
+<label>
+Objecte
+</label>
+
+<div class="grup-botons" id="objecte">
+
+    <button type="button" class="opcio seleccionat" data-tipus="canica">
+        Canica — 0,005 kg
+    </button>
+
+    <button type="button" class="opcio" data-tipus="tennis">
+        Pilota de tennis — 0,058 kg
+    </button>
+
+    <button type="button" class="opcio" data-tipus="medicinal">
+        Pilota medicinal — 5 kg
+    </button>
+
+    <button type="button" class="opcio" data-tipus="pesant">
+        Objecte pesant — 20 kg
+    </button>
+
+</div>
+
+<p class="pista-llancar">
+Fes clic a qualsevol punt de la xarxa per llançar l'objecte seleccionat.
+</p>
+
+</div>
+
+
+</div>
+
+
+<!-- ===================================================
+     TEXT PROPORCIONAT
+     =================================================== -->
+
+<div class="text">
+
+<h2>
+La curvatura de l’espaitemps
+</h2>
+
+<p>
+Einstein va enderrocar la concepció de la gravetat com a força i la va definir com a deformació de l’espaitemps, una mena de teixit format per les 3 dimensions d’espai (x, y, z) i una dimensió de temps.
+</p>
+
+<p>
+Qualsevol tipus i quantitat d’energia deforma l’espaitemps. La massa és energia, per tant, qualsevol cos amb massa deforma l’espaitemps.
+</p>
+
+<p>
+<strong>Com més massa, més deforma l’espaitemps.</strong>
+</p>
+
+</div>
+
+
+</div>
+
+
+<script>
+
+
+// =====================================================
+// CANVAS
+// =====================================================
+
+const canvas =
+    document.getElementById("canvas");
+
+const ctx =
+    canvas.getContext("2d");
+
+
+let width = 0;
+
+let height = 0;
+
+
+// =====================================================
+// ESTAT DEL SIMULADOR
+// =====================================================
+
+let massaCentral = null;
+
+let boles = [];
+
+
+// =====================================================
+// TIPUS D'OBJECTES
+// =====================================================
+
+const objectes = {
+
+    canica: {
+
+        massa: 0.005,
+
+        radi: 5
+
+    },
+
+    tennis: {
+
+        massa: 0.058,
+
+        radi: 8
+
+    },
+
+    medicinal: {
+
+        massa: 5,
+
+        radi: 13
+
+    },
+
+    pesant: {
+
+        massa: 20,
+
+        radi: 17
+
+    }
+
+};
+
+
+// =====================================================
+// CONFIGURACIÓ DE LA XARXA
+// =====================================================
+
+const separacio = 32;
+
+
+// =====================================================
+// ESTRELLES DE FONS
+// =====================================================
+
+const estrelles = [];
+
+
+for (
+    let i = 0;
+    i < 170;
+    i++
+) {
+
+    estrelles.push({
+
+        x: Math.random(),
+
+        y:
+            Math.random() * 0.58,
+
+        radi:
+            Math.random() * 1.4
+            + 0.3,
+
+        opacitat:
+            Math.random() * 0.5
+            + 0.15
+
+    });
+
+}
+
+
+// =====================================================
+// REDIMENSIONAR CANVAS
+// =====================================================
+
+function redimensionar() {
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+    const ratio =
+        window.devicePixelRatio || 1;
+
+
+    canvas.width =
+        rect.width * ratio;
+
+    canvas.height =
+        rect.height * ratio;
+
+
+    ctx.setTransform(
+
+        ratio,
+        0,
+        0,
+        ratio,
+        0,
+        0
+
+    );
+
+
+    width =
+        rect.width;
+
+    height =
+        rect.height;
+
+}
+
+
+window.addEventListener(
+    "resize",
+    redimensionar
+);
+
+
+redimensionar();
+
+
+// =====================================================
+// CENTRE DE LA XARXA
+// =====================================================
+
+function centre() {
+
+    return {
+
+        x:
+            width * 0.50,
+
+        y:
+            height * 0.55
+
+    };
+
+}
+
+
+// =====================================================
+// CURVATURA DE L'ESPAIT-TEMPS
+// =====================================================
+//
+// La curvatura depèn únicament de la massa.
+//
+// No existeix cap control manual de curvatura.
+//
+// =====================================================
+
+function calcularCurvatura(x, y) {
+
+    if (massaCentral === null) {
+        return 0;
+    }
+
+    const c = centre();
+
+    const dx = x - c.x;
+    const dy = y - c.y;
+
+    const distancia =
+        Math.sqrt(
+            dx * dx +
+            dy * dy
+        );
+
+    /*
+     * La curvatura continua augmentant amb la massa,
+     * però ho fa de manera progressiva perquè
+     * les masses grans no facin sortir la xarxa
+     * de la pantalla.
+     */
+
+    const intensitat =
+        25 +
+        90 * Math.sqrt(
+            massaCentral / 1000
+        );
+
+    const radiInfluència = 310;
+
+    const curvatura =
+
+        intensitat *
+
+        Math.exp(
+
+            -(
+                distancia *
+                distancia
+            ) /
+
+            (
+                2 *
+                radiInfluència *
+                radiInfluència
+            )
+
+        );
+
+    /*
+     * Límit visual de seguretat.
+     * Evita que la superfície surti del canvas.
+     */
+
+    return Math.min(
+        curvatura,
+        100
+    );
+
+}
+
+// =====================================================
+// PROJECCIÓ DE LA XARXA
+// =====================================================
+//
+// Perspectiva semblant a la imatge:
+//
+//     zona posterior
+//       ┌───────────────┐
+//      /                 /
+//     /                 /
+//    /_________________/
+//       zona frontal
+//
+// =====================================================
+
+function projectar(x, y) {
+
+    const c =
+        centre();
+
+
+    const dx =
+        x - c.x;
+
+
+    /*
+     * Profunditat de la xarxa.
+     *
+     * La part superior és més llunyana.
+     * La part inferior és més propera.
+     */
+
+    const profunditat =
+        y / height;
+
+
+    /*
+     * La part posterior és més estreta.
+     */
+
+    const escalaX =
+
+        0.53 +
+        profunditat * 0.57;
+
+
+    /*
+     * Posició vertical projectada.
+     */
+
+    const yBase =
+
+        height * 0.20 +
+
+        profunditat *
+        height *
+        0.67;
+
+
+    /*
+     * Deformació de la superfície.
+     */
+
+    const curvatura =
+        calcularCurvatura(
+            x,
+            y
+        );
+
+
+    /*
+     * L'espai-temps s'enfonsa
+     * al voltant de la massa.
+     */
+
+ const yFinal =
+
+    Math.min(
+
+        yBase +
+        curvatura * 1.05,
+
+        height - 20
+
+    );
+
+
+    return {
+
+        x:
+            c.x +
+            dx * escalaX,
+
+        y:
+            yFinal
+
+    };
+
+}
+
+
+// =====================================================
+// DIBUIXAR FONS
+// =====================================================
+
+function dibuixarFons() {
+
+    ctx.fillStyle =
+        "#02040a";
+
+    ctx.fillRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    for (
+        const estrella of estrelles
+    ) {
+
+        ctx.beginPath();
+
+        ctx.arc(
+
+            estrella.x * width,
+
+            estrella.y * height,
+
+            estrella.radi,
+
+            0,
+            Math.PI * 2
+
+        );
+
+
+        ctx.fillStyle =
+
+            `rgba(
+                255,
+                255,
+                255,
+                ${estrella.opacitat}
+            )`;
+
+
+        ctx.fill();
+
+    }
+
+}
+
+
+// =====================================================
+// DIBUIXAR LA XARXA
+// =====================================================
+//
+// La xarxa té moltes línies fines per donar
+// una aparença més semblant a un llençol de malla.
+//
+// =====================================================
+
+function dibuixarXarxa() {
+
+    ctx.lineWidth = 1;
+
+
+    /*
+     * --------------------------------------------------
+     * LÍNIES HORITZONTALS
+     * --------------------------------------------------
+     */
+
+    for (
+        let y = 0;
+        y <= height;
+        y += separacio
+    ) {
+
+        ctx.beginPath();
+
+
+        let primerPunt = true;
+
+
+        for (
+            let x = 0;
+            x <= width;
+            x += 3
+        ) {
+
+            const p =
+                projectar(
+                    x,
+                    y
+                );
+
+
+            if (
+                primerPunt
+            ) {
+
+                ctx.moveTo(
+                    p.x,
+                    p.y
+                );
+
+                primerPunt =
+                    false;
+
+            } else {
+
+                ctx.lineTo(
+                    p.x,
+                    p.y
+                );
+
+            }
+
+        }
+
+
+        ctx.strokeStyle =
+            "rgba(65,175,195,0.72)";
+
+        ctx.stroke();
+
+    }
+
+
+    /*
+     * --------------------------------------------------
+     * LÍNIES VERTICALS
+     * --------------------------------------------------
+     */
+
+    for (
+        let x = 0;
+        x <= width;
+        x += separacio
+    ) {
+
+        ctx.beginPath();
+
+
+        let primerPunt = true;
+
+
+        for (
+            let y = 0;
+            y <= height;
+            y += 3
+        ) {
+
+            const p =
+                projectar(
+                    x,
+                    y
+                );
+
+
+            if (
+                primerPunt
+            ) {
+
+                ctx.moveTo(
+                    p.x,
+                    p.y
+                );
+
+                primerPunt =
+                    false;
+
+            } else {
+
+                ctx.lineTo(
+                    p.x,
+                    p.y
+                );
+
+            }
+
+        }
+
+
+        ctx.strokeStyle =
+            "rgba(65,175,195,0.72)";
+
+        ctx.stroke();
+
+    }
+
+}
+
+
+// =====================================================
+// DIBUIXAR MASSA CENTRAL
+// =====================================================
+
+function dibuixarMassa() {
+
+    if (
+        massaCentral === null
+    ) {
+
+        return;
+
+    }
+
+
+    const c =
+        centre();
+
+
+    const posicio =
+        projectar(
+            c.x,
+            c.y
+        );
+
+
+    /*
+     * Mida visual de la massa.
+     */
+
+    const radi =
+
+        17 +
+        Math.sqrt(
+            massaCentral
+        ) * 1.6;
+
+
+    const x =
+        posicio.x;
+
+const y = Math.min(
+    posicio.y - radi * 0.65,
+    height - radi - 20
+);
+
+
+    /*
+     * Aura.
+     */
+
+    const gradient =
+        ctx.createRadialGradient(
+
+            x,
+            y,
+
+            2,
+
+            x,
+            y,
+
+            radi * 3
+
+        );
+
+
+    gradient.addColorStop(
+        0,
+        "rgba(210,220,255,0.95)"
+    );
+
+
+    gradient.addColorStop(
+        0.20,
+        "rgba(100,120,240,0.55)"
+    );
+
+
+    gradient.addColorStop(
+        0.50,
+        "rgba(60,80,190,0.20)"
+    );
+
+
+    gradient.addColorStop(
+        1,
+        "rgba(20,30,100,0)"
+    );
+
+
+    ctx.beginPath();
+
+
+    ctx.arc(
+
+        x,
+        y,
+
+        radi * 3,
+
+        0,
+        Math.PI * 2
+
+    );
+
+
+    ctx.fillStyle =
+        gradient;
+
+    ctx.fill();
+
+
+    /*
+     * Massa.
+     */
+
+    ctx.beginPath();
+
+
+    ctx.arc(
+
+        x,
+        y,
+
+        radi,
+
+        0,
+        Math.PI * 2
+
+    );
+
+
+    ctx.fillStyle =
+        "#080a10";
+
+    ctx.fill();
+
+
+    ctx.strokeStyle =
+        "#b0baff";
+
+    ctx.lineWidth = 2;
+
+    ctx.stroke();
+
+}
+
+
+// =====================================================
+// ACTUALITZAR UNA BOLA
+// =====================================================
+
+function actualitzarBola(bola) {
+
+
+    /*
+     * --------------------------------------------------
+     * SENSE MASSA
+     * --------------------------------------------------
+     */
+
+    if (
+        massaCentral === null
+    ) {
+
+        bola.x += bola.vx;
+
+        bola.y += bola.vy;
+
+    }
+
+
+    /*
+     * --------------------------------------------------
+     * AMB MASSA
+     * --------------------------------------------------
+     */
+
+    else {
+
+        const c =
+            centre();
+
+
+        const dx =
+            c.x -
+            bola.x;
+
+
+        const dy =
+            c.y -
+            bola.y;
+
+
+        const distancia =
+            Math.sqrt(
+                dx * dx +
+                dy * dy
+            );
+
+
+        if (
+            distancia > 25
+        ) {
+
+            /*
+             * Atracció visual.
+             *
+             * La massa més gran produeix
+             * una desviació més intensa.
+             */
+
+            const acceleracio =
+
+                (
+                    massaCentral *
+                    0.00085
+                ) /
+
+                Math.max(
+                    distancia / 100,
+                    0.5
+                );
+
+
+            bola.vx +=
+
+                (
+                    dx /
+                    distancia
+                ) *
+                acceleracio;
+
+
+            bola.vy +=
+
+                (
+                    dy /
+                    distancia
+                ) *
+                acceleracio;
+
+
+            /*
+             * Petita estabilització
+             * de la simulació.
+             */
+
+            bola.vx *= 0.999;
+
+            bola.vy *= 0.999;
+
+
+            bola.x +=
+                bola.vx;
+
+            bola.y +=
+                bola.vy;
+
+        }
+
+    }
+
+
+    /*
+     * Trajectòria.
+     */
+
+    bola.trail.push({
+
+        x:
+            bola.x,
+
+        y:
+            bola.y
+
+    });
+
+
+    if (
+        bola.trail.length > 130
+    ) {
+
+        bola.trail.shift();
+
+    }
+
+
+    /*
+     * Si surt de la pantalla,
+     * reapareix.
+     */
+
+    if (
+
+        bola.x < -120 ||
+
+        bola.x > width + 120 ||
+
+        bola.y < -120 ||
+
+        bola.y > height + 120
+
+    ) {
+
+        reiniciarPosicioBola(
+            bola
+        );
+
+    }
+
+}
+
+
+// =====================================================
+// REINICIAR POSICIÓ DE LA BOLA
+// =====================================================
+
+function reiniciarPosicioBola(bola) {
+
+    const c =
+        centre();
+
+
+    const angle =
+        Math.random() *
+        Math.PI *
+        2;
+
+
+    const distancia =
+
+        Math.min(
+            width,
+            height
+        ) * 0.40;
+
+
+    bola.x =
+
+        c.x +
+        Math.cos(angle) *
+        distancia;
+
+
+    bola.y =
+
+        c.y +
+        Math.sin(angle) *
+        distancia;
+
+
+    const velocitat =
+        2.2;
+
+
+    bola.vx =
+
+        -Math.sin(angle) *
+        velocitat;
+
+
+    bola.vy =
+
+        Math.cos(angle) *
+        velocitat;
+
+
+    bola.trail = [];
+
+}
+
+
+// =====================================================
+// DIBUIXAR TRAJECTÒRIA
+// =====================================================
+
+function dibuixarTrajectoria(bola) {
+
+    if (
+        bola.trail.length < 2
+    ) {
+
+        return;
+
+    }
+
+
+    ctx.beginPath();
+
+
+    for (
+        let i = 0;
+        i < bola.trail.length;
+        i++
+    ) {
+
+        const punt =
+            bola.trail[i];
+
+
+        const p =
+            projectar(
+                punt.x,
+                punt.y
+            );
+
+
+        const y =
+            p.y - 7;
+
+
+        if (
+            i === 0
+        ) {
+
+            ctx.moveTo(
+                p.x,
+                y
+            );
+
+        } else {
+
+            ctx.lineTo(
+                p.x,
+                y
+            );
+
+        }
+
+    }
+
+
+    ctx.strokeStyle =
+        "rgba(255,255,255,0.35)";
+
+    ctx.lineWidth = 1.5;
+
+    ctx.stroke();
+
+}
+
+
+// =====================================================
+// DIBUIXAR BOLA
+// =====================================================
+
+function dibuixarBola(bola) {
+
+    const p =
+        projectar(
+            bola.x,
+            bola.y
+        );
+
+
+    /*
+     * L'objecte està una mica per sobre
+     * de la superfície.
+     */
+
+    const elevacio = 8;
+
+
+    const x =
+        p.x;
+
+
+    const y =
+        p.y -
+        elevacio;
+
+
+    /*
+     * Ombra sobre la xarxa.
+     */
+
+    ctx.beginPath();
+
+
+    ctx.ellipse(
+
+        x,
+        p.y,
+
+        bola.radi * 1.2,
+
+        bola.radi * 0.45,
+
+        0,
+        0,
+        Math.PI * 2
+
+    );
+
+
+    ctx.fillStyle =
+        "rgba(0,0,0,0.35)";
+
+    ctx.fill();
+
+
+    /*
+     * Bola.
+     */
+
+    ctx.beginPath();
+
+
+    ctx.arc(
+
+        x,
+        y,
+
+        bola.radi,
+
+        0,
+        Math.PI * 2
+
+    );
+
+
+    ctx.fillStyle =
+        "#eeeeee";
+
+    ctx.fill();
+
+
+    ctx.strokeStyle =
+        "#ffffff";
+
+    ctx.lineWidth = 1.5;
+
+    ctx.stroke();
+
+}
+
+
+// =====================================================
+// INVERTIR LA PROJECCIÓ
+// =====================================================
+//
+// Donat un punt de la pantalla, troba les coordenades
+// (x, y) de la xarxa tals que dibuixarBola() hi
+// situï l'objecte.
+//
+// =====================================================
+
+function invertirProjeccio(px, py) {
+
+    const c =
+        centre();
+
+    const elevacio = 8;
+
+    const objectiuY =
+        py + elevacio;
+
+
+    /*
+     * Per a una y donada, la x queda fixada
+     * per l'escala horitzontal (que només depèn de y).
+     */
+
+    function xPer(y) {
+
+        const profunditat =
+            y / height;
+
+        const escalaX =
+            0.53 +
+            profunditat * 0.57;
+
+        return (
+            c.x +
+            (px - c.x) / escalaX
+        );
+
+    }
+
+    function errorPer(y) {
+
+        return Math.abs(
+
+            projectar(
+                xPer(y),
+                y
+            ).y - objectiuY
+
+        );
+
+    }
+
+
+    /*
+     * Cerca gruixuda i després fina.
+     */
+
+    let milloY = 0;
+
+    let milloError = Infinity;
+
+    for (
+        let y = 0;
+        y <= height;
+        y += 1
+    ) {
+
+        const e = errorPer(y);
+
+        if (e < milloError) {
+
+            milloError = e;
+
+            milloY = y;
+
+        }
+
+    }
+
+    const inici =
+        Math.max(0, milloY - 1);
+
+    const fi =
+        Math.min(height, milloY + 1);
+
+    for (
+        let y = inici;
+        y <= fi;
+        y += 0.05
+    ) {
+
+        const e = errorPer(y);
+
+        if (e < milloError) {
+
+            milloError = e;
+
+            milloY = y;
+
+        }
+
+    }
+
+    return {
+
+        x: xPer(milloY),
+
+        y: milloY
+
+    };
+
+}
+
+
+// =====================================================
+// CREAR UNA BOLA
+// =====================================================
+//
+// La bola apareix quan l'usuari clica sobre la xarxa.
+//
+// =====================================================
+
+let tipusSeleccionat = "canica";
+
+function crearBola(x, y) {
+
+    const tipus =
+        tipusSeleccionat;
+
+
+    const dades =
+        objectes[tipus];
+
+
+    const c =
+        centre();
+
+
+    const dx =
+        x - c.x;
+
+
+    const dy =
+        y - c.y;
+
+
+    const distancia =
+        Math.sqrt(
+            dx * dx +
+            dy * dy
+        );
+
+
+    /*
+     * Si es clica massa a prop
+     * del centre no es crea la bola.
+     */
+
+    if (
+        distancia < 55
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+     * Direcció tangent a la massa.
+     *
+     * Això permet que l'objecte
+     * inicialment orbiti.
+     */
+
+    const velocitat =
+        2.2;
+
+
+    const vx =
+
+        (-dy /
+        distancia) *
+        velocitat;
+
+
+    const vy =
+
+        (dx /
+        distancia) *
+        velocitat;
+
+
+    boles.push({
+
+        x: x,
+
+        y: y,
+
+        vx: vx,
+
+        vy: vy,
+
+        massa:
+            dades.massa,
+
+        radi:
+            dades.radi,
+
+        trail: []
+
+    });
+
+}
+
+
+// =====================================================
+// CLIC SOBRE LA XARXA
+// =====================================================
+//
+// No cal cap botó "Llançar bola".
+// Clicar directament sobre la xarxa
+// crea l'objecte.
+//
+// =====================================================
+
+canvas.addEventListener(
+
+    "click",
+
+    function(event) {
+
+        const rect =
+            canvas.getBoundingClientRect();
+
+
+        /*
+         * Convertir el clic a coordenades
+         * de la superfície.
+         */
+
+        const x =
+            event.clientX -
+            rect.left;
+
+
+        const y =
+            event.clientY -
+            rect.top;
+
+
+        /*
+         * Invertir la projecció: buscar el punt de la
+         * xarxa que es dibuixa exactament sota el cursor.
+         */
+
+        const p =
+            invertirProjeccio(
+                x,
+                y
+            );
+
+        crearBola(
+            p.x,
+            p.y
+        );
+
+    }
+
+);
+
+
+// =====================================================
+// SELECCIÓ D'OBJECTE (botons)
+// =====================================================
+
+document
+.querySelectorAll(
+    "#objecte .opcio"
+)
+.forEach(function(boto) {
+
+    boto.addEventListener(
+
+        "click",
+
+        function() {
+
+            tipusSeleccionat =
+                boto.dataset.tipus;
+
+            document
+            .querySelectorAll(
+                "#objecte .opcio"
+            )
+            .forEach(function(b) {
+
+                b.classList.toggle(
+                    "seleccionat",
+                    b === boto
+                );
+
+            });
+
+        }
+
+    );
+
+});
+
+
+// =====================================================
+// MASSA CENTRAL (slider)
+// =====================================================
+
+document
+.getElementById(
+    "massa"
+)
+.addEventListener(
+
+    "input",
+
+    function() {
+
+        const valor =
+            Number(this.value);
+
+        document.getElementById(
+            "massaValor"
+        ).textContent =
+            valor + " kg";
+
+        massaCentral =
+            valor > 0 ? valor : null;
+
+    }
+
+);
+
+
+// =====================================================
+// REINICIAR
+// =====================================================
+
+document
+.getElementById(
+    "reiniciar"
+)
+.addEventListener(
+
+    "click",
+
+    function() {
+
+        massaCentral =
+            null;
+
+        document.getElementById(
+            "massa"
+        ).value = 0;
+
+        document.getElementById(
+            "massaValor"
+        ).textContent = "0 kg";
+
+        boles = [];
+
+    }
+
+);
+
+
+// =====================================================
+// ANIMACIÓ PRINCIPAL
+// =====================================================
+
+function animar() {
+
+
+    /*
+     * Fons
+     */
+
+    dibuixarFons();
+
+
+    /*
+     * Xarxa
+     */
+
+    dibuixarXarxa();
+
+
+    /*
+     * Actualitzar objectes
+     */
+
+    for (
+        const bola of boles
+    ) {
+
+        actualitzarBola(
+            bola
+        );
+
+    }
+
+
+    /*
+     * Trajectòries
+     */
+
+    for (
+        const bola of boles
+    ) {
+
+        dibuixarTrajectoria(
+            bola
+        );
+
+    }
+
+
+    /*
+     * Massa central
+     */
+
+    dibuixarMassa();
+
+
+    /*
+     * Objectes
+     */
+
+    for (
+        const bola of boles
+    ) {
+
+        dibuixarBola(
+            bola
+        );
+
+    }
+
+
+    requestAnimationFrame(
+        animar
+    );
+
+}
+
+
+// =====================================================
+// INICIAR
+// =====================================================
+
+animar();
+
+</script>
+
+
+</body>
+
+</html>
